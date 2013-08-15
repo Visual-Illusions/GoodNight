@@ -1,0 +1,173 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.visualillusionsent</groupId>
+  <artifactId>GoodNight</artifactId>
+  <version>2.0-SNAPSHOT</version>
+  <name>GoodNight</name>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <ProgramStatus>ALPHA</ProgramStatus>
+  </properties>
+  <description>Day Voting during night cycle</description>
+  <licenses>
+    <license>
+      <name>GNU General Public License v3</name>
+      <url>http://www.gnu.org/licenses/gpl.html</url>
+      <comments>
+        GoodNight is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+              
+        GoodNight is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+        without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+        See the GNU General Public License for more details.
+      </comments>
+    </license>
+  </licenses>
+  <url>http://wiki.visualillusionsent.net/GoodNight/</url>
+  <inceptionYear>2012</inceptionYear>
+  <organization>
+    <name>Visual Illusions Entertainment</name>
+    <url>http://visualillusionsent.net</url>
+  </organization>
+  <scm>
+    <url>https://github.com/Visual-Illusions/GoodNight</url>
+    <connection>scm:git:git@github.com:Visual-Illusions/GoodNight.git</connection>
+    <developerConnection>scm:git:git@github.com:Visual-Illusions/GoodNight.git</developerConnection>
+  </scm>
+  <issueManagement>
+    <url>http://github.com/Visual-Illusions/GoodNight/issues</url>
+    <system>GitHub Issues Tracker</system>
+  </issueManagement>
+  <ciManagement>
+    <url>http://ci.visualillusionsent.net/job/GoodNight</url>
+    <system>Jenkins</system>
+  </ciManagement>
+  <distributionManagement>
+    <repository>
+      <id>vi-repo</id>
+      <url>ftp://repo.visualillusionsent.net/</url>
+    </repository>
+  </distributionManagement>
+  <repositories>
+    <repository>
+      <id>vi-repo</id>
+      <name>Visual Illusions Repository</name>
+      <url>http://repo.visualillusionsent.net/</url>
+    </repository>
+  </repositories>
+  <dependencies>
+   <!-- Mods -->
+   <dependency>
+     <groupId>net.canarymod</groupId>
+     <artifactId>CanaryLib</artifactId>
+     <version>0.10-SNAPSHOT</version>
+   </dependency>
+   <dependency>
+     <groupId>net.visualillusionsent</groupId>
+     <artifactId>viutils</artifactId>
+     <version>1.0.4</version>
+   </dependency>
+   <!-- Mods End -->
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doCheck>false</doCheck>
+          <doUpdate>false</doUpdate>
+          <format>{0,number}</format>
+          <items>
+            <item>buildNumber0</item>
+          </items>
+        </configuration>
+      </plugin>
+      <!-- Compile plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <finalName>${project.build.finalName}</finalName>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+            <manifestEntries>
+              <Title>${project.name}</Title>
+              <Version>${project.version}</Version>
+              <Build>${buildNumber}</Build>
+              <ProgramStatus>${ProgramStatus}</ProgramStatus>
+              <Vendor>Visual Illusions Entertainment</Vendor>
+              <Built-By>${user.name}</Built-By>
+              <Build-Time>${maven.build.timestamp}</Build-Time>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <version>1.10.b1</version>
+        <executions>
+          <execution>
+            <phase>clean</phase>
+            <goals>
+              <goal>format</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <quiet>false</quiet>
+          <encoding>UTF-8</encoding>
+          <strictCheck>true</strictCheck>
+          <header>${basedir}/HEADER_GPL.txt</header>
+          <keywords>
+            <keyword>${project.name}</keyword>
+            <keyword>license</keyword>
+          </keywords>
+          <mapping>
+            <java>SLASHSTAR_STYLE</java>
+          </mapping>
+          <properties>
+            <name>${project.name}</name>
+            <copyright>Copyright © ${project.inceptionYear} Visual Illusions Entertainment</copyright>
+           </properties>
+           <includes>
+            <include>src/main/java/**</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+    <extensions>
+      <!-- FTP Extension to upload to repo.visualillusionsent.net -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>2.4</version>
+      </extension>
+    </extensions>
+  </build>
+</project>
