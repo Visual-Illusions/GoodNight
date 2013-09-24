@@ -1,6 +1,14 @@
 ;# GoodNight Canary Plugin Configuration File
 ;# Copyright (C) 2012-2013 Visual Illusions Entertainment
-main-class=net.visualillusionsent.minecraft.server.mod.canary.plugin.goodnight.CanaryGoodNight
+main-class=net.visualillusionsent.goodnight.canary.CanaryGoodNight
 name=GoodNight
 author=Visual Illusions Entertainment
-version=2.0
+version=$plugin.version$
+
+;Visual Illusions Specific Settings
+developers=$devs$
+build.number=$build$
+build.time=$build.time$
+program.status=$program.status$
+version.check.url=$version.check.url$
+wiki.url=$wiki$

@@ -6,7 +6,11 @@
   <name>GoodNight</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ProgramStatus>ALPHA</ProgramStatus>
+        <program.status>ALPHA</program.status>
+        <build.number>0-dev</build.number>
+        <canary.lib.version>1.0-RC-2</canary.lib.version>
+        <version.check.url>http://visualillusionsent.net/minecraft/plugins/</version.check.url>
+        <devs>darkdiplomat, somners</devs>
   </properties>
   <description>Day Voting during night cycle</description>
   <licenses>
@@ -62,36 +66,67 @@
    <dependency>
      <groupId>net.canarymod</groupId>
      <artifactId>CanaryLib</artifactId>
-     <version>0.10-SNAPSHOT</version>
+     <version>${canary.lib.version}</version>
    </dependency>
    <dependency>
      <groupId>net.visualillusionsent</groupId>
      <artifactId>viutils</artifactId>
-     <version>1.0.4</version>
+     <version>1.1.1</version>
    </dependency>
    <!-- Mods End -->
   </dependencies>
   <build>
     <plugins>
+      <!-- Update Canary.inf -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.2</version>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <version>1.5.2</version>
         <executions>
           <execution>
-            <phase>validate</phase>
+            <phase>prepare-package</phase>
             <goals>
-              <goal>create</goal>
+              <goal>replace</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-          <format>{0,number}</format>
-          <items>
-            <item>buildNumber0</item>
-          </items>
+          <file>/${basedir}/target/classes/Canary.inf</file>
+          <replacements>
+            <replacement>
+              <token>$plugin.version$</token>
+              <value>${project.version}</value>
+            </replacement>
+            <replacement>
+              <token>$wiki$</token>
+              <value>${project.url}</value>
+            </replacement>
+            <replacement>
+              <token>$issues$</token>
+              <value>${project.issueManagement.url}</value>
+            </replacement>
+            <replace>
+              <token>$version.check.url$</token>
+              <value>${version.check.url}</value>
+            </replace>
+            <replace>
+              <token>$program.status$</token>
+              <value>${program.status}</value>
+            </replace>
+            <replace>
+              <token>$build$</token>
+              <value>${build.number}</value>
+            </replace>
+            <replace>
+              <token>$build.time$</token>
+              <value>${maven.build.timestamp}</value>
+            </replace>
+            <replace>
+              <token>$devs$</token>
+              <value>${devs}</value>
+            </replace>
+          </replacements>
+          <regex>false</regex>
         </configuration>
       </plugin>
       <!-- Compile plugin -->
@@ -161,13 +196,5 @@
         </configuration>
       </plugin>
     </plugins>
-    <extensions>
-      <!-- FTP Extension to upload to repo.visualillusionsent.net -->
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ftp</artifactId>
-        <version>2.4</version>
-      </extension>
-    </extensions>
   </build>
 </project>

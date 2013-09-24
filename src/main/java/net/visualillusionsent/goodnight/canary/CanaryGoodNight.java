@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with GoodNight.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-package net.visualillusionsent.minecraft.server.mod.canary.plugin.goodnight;
+package net.visualillusionsent.goodnight.canary;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
@@ -23,12 +23,11 @@ import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.world.World;
 import net.canarymod.config.Configuration;
-import net.canarymod.plugin.Plugin;
 import net.visualillusionsent.utils.PropertiesFile;
-import net.visuallillusionsent.goodnight.GoodNight;
-import net.visuallillusionsent.goodnight.VoteCalculator;
+import net.visualillusionsent.goodnight.GoodNight;
+import net.visualillusionsent.goodnight.VoteCalculator;
 
-public final class CanaryGoodNight extends Plugin implements GoodNight {
+public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implements GoodNight {
 
     private final HashMap<String, VoteCalculator> calculators = new HashMap<String, VoteCalculator>();
     private final HashMap<String, PropertiesFile> world_props = new HashMap<String, PropertiesFile>();

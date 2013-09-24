@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with GoodNight.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-package net.visuallillusionsent.goodnight;
+package net.visualillusionsent.goodnight;
 
 public interface GoodNight {
 
