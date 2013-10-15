@@ -29,15 +29,13 @@ import net.canarymod.hook.entity.DimensionSwitchHook;
 import net.canarymod.hook.player.DisconnectionHook;
 import net.canarymod.hook.world.TimeChangeHook;
 import net.canarymod.plugin.PluginListener;
+import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
 import net.visualillusionsent.utils.VersionChecker;
 
 public final class CanaryGoodNightListener extends VisualIllusionsCanaryPluginInformationCommand implements PluginListener {
 
-    private final CanaryGoodNight goodnight;
-
     CanaryGoodNightListener(CanaryGoodNight goodnight) throws CommandDependencyException {
         super(goodnight);
-        this.goodnight = goodnight;
         Canary.hooks().registerListener(this, goodnight);
         Canary.commands().registerCommands(this, goodnight, false);
     }
@@ -45,38 +43,38 @@ public final class CanaryGoodNightListener extends VisualIllusionsCanaryPluginIn
     @HookHandler
     public final void dimensionSwitch(DimensionSwitchHook hook) {
         if (hook.getEntity() instanceof Player) {
-            goodnight.removeUser(hook.getEntity().getName(), hook.getLocationFrom().getWorld().getFqName());
+            getGN().removeUser(hook.getEntity().getName(), hook.getLocationFrom().getWorld().getFqName());
         }
     }
 
     @HookHandler
     public final void disconnect(DisconnectionHook hook) {
-        goodnight.removeUser(hook.getPlayer().getName(), hook.getPlayer().getWorld().getFqName());
+        getGN().removeUser(hook.getPlayer().getName(), hook.getPlayer().getWorld().getFqName());
     }
 
     @HookHandler
     public final void worldTimeChange(TimeChangeHook hook) {
         if (!isNightFall(hook.getWorld().getRelativeTime())) {
-            goodnight.morningClear(hook.getWorld().getFqName());
+            getGN().morningClear(hook.getWorld().getFqName());
         }
     }
 
     @Command(aliases = { "goodnight" },
-        description = "Casts vote",
-        permissions = { "goodnight.vote" },
-        toolTip = "/goodnight")
+            description = "Casts vote",
+            permissions = { "goodnight.vote" },
+            toolTip = "/goodnight")
     public final void goodNight(MessageReceiver msgrec, String[] args) {
         if (msgrec instanceof Player) {
             Player player = (Player) msgrec;
             if (player.getWorld().getType() != DimensionType.fromName("NETHER") && player.getWorld().getType() != DimensionType.fromName("END")) {
-                if (goodnight.worldEnabled(player.getWorld().getName())) {
+                if (getGN().worldEnabled(player.getWorld().getName())) {
                     if (isNightFall(player.getWorld().getRelativeTime())) {
-                        if (!goodnight.userVote(player.getName(), player.getWorld().getName())) {
-                            msgrec.message(goodnight.alreadyVoted(player.getWorld().getName(), player.getName()));
+                        if (!getGN().userVote(player.getName(), player.getWorld().getName())) {
+                            msgrec.message(getGN().alreadyVoted(player.getWorld().getName(), player.getName()));
                         }
                     }
                     else {
-                        msgrec.message(goodnight.isDayTime(player.getWorld().getName(), player.getName()));
+                        msgrec.message(getGN().isDayTime(player.getWorld().getName(), player.getName()));
                     }
                 }
                 else {
@@ -90,19 +88,18 @@ public final class CanaryGoodNightListener extends VisualIllusionsCanaryPluginIn
     }
 
     @Command(aliases = { "info" },
-        description = "GoodNight Information Command",
-        permissions = { "goodnight.info" },
-        toolTip = "/goodnight info",
-        parent = "goodnight")
+            description = "GoodNight Information Command",
+            permissions = { "goodnight.info" },
+            toolTip = "/goodnight info")
     public final void goodNightInfo(MessageReceiver msgrec, String[] args) {
         for (String msg : about) {
             if (msg.equals("$VERSION_CHECK$")) {
                 VersionChecker vc = plugin.getVersionChecker();
-                Boolean islatest = vc.isLatest();
-                if (islatest == null) {
+                Boolean isLatest = vc.isLatest();
+                if (isLatest == null) {
                     msgrec.message(center(Colors.GRAY + "VersionCheckerError: " + vc.getErrorMessage()));
                 }
-                else if (!islatest) {
+                else if (!isLatest) {
                     msgrec.message(center(Colors.GRAY + vc.getUpdateAvailibleMessage()));
                 }
                 else {
@@ -117,5 +114,9 @@ public final class CanaryGoodNightListener extends VisualIllusionsCanaryPluginIn
 
     private final boolean isNightFall(long time) {
         return time >= 11500 && time <= 22009;
+    }
+
+    private CanaryGoodNight getGN() {
+        return (CanaryGoodNight) plugin;
     }
 }

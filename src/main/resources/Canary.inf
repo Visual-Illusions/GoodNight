@@ -1,7 +1,6 @@
-;# GoodNight Canary Plugin Configuration File
-;# Copyright (C) 2012-2013 Visual Illusions Entertainment
-main-class=net.visualillusionsent.goodnight.canary.CanaryGoodNight
-name=GoodNight
+;# CraftBorders - Canary Plugin Configuration File
+;# Copyright (c) 2013 Visual Illusions Entertainment
+main-class=net.visualillusionsent.craftborders.CraftBorders
 author=Visual Illusions Entertainment
 version=$plugin.version$
 
@@ -12,3 +11,4 @@ build.time=$build.time$
 program.status=$program.status$
 version.check.url=$version.check.url$
 wiki.url=$wiki$
+issues.url=$issues$

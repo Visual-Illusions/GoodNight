@@ -17,15 +17,17 @@
  */
 package net.visualillusionsent.goodnight.canary;
 
-import java.util.HashMap;
-import java.util.regex.Pattern;
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.world.World;
 import net.canarymod.config.Configuration;
-import net.visualillusionsent.utils.PropertiesFile;
 import net.visualillusionsent.goodnight.GoodNight;
 import net.visualillusionsent.goodnight.VoteCalculator;
+import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
+import net.visualillusionsent.utils.PropertiesFile;
+
+import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implements GoodNight {
 
@@ -53,7 +55,8 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
     }
 
     @Override
-    public void disable() {}
+    public void disable() {
+    }
 
     @Override
     public int getWorldUserCount(String world) {
