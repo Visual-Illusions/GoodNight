@@ -151,7 +151,7 @@
                         </replace>
                         <replace>
                             <token>{copyright.years}</token>
-                            <value>${project.inceptionYear}</value>
+                            <value>${project.inceptionYear}-${current.year}</value>
                         </replace>
                         <replace>
                             <token>{name}</token>
@@ -222,7 +222,7 @@
                     </mapping>
                     <properties>
                         <name>${project.name}</name>
-                        <copyright>Copyright © ${project.inceptionYear} Visual Illusions Entertainment
+                        <copyright>Copyright © ${project.inceptionYear}-${current.year} Visual Illusions Entertainment
                         </copyright>
                     </properties>
                     <includes>
