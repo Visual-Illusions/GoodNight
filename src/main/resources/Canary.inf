@@ -1,14 +1,8 @@
-;# CraftBorders - Canary Plugin Configuration File
-;# Copyright (c) 2013 Visual Illusions Entertainment
-main-class=net.visualillusionsent.craftborders.CraftBorders
-author=Visual Illusions Entertainment
-version=$plugin.version$
+;# {name} - Canary Plugin Configuration File
+;# Copyright © {copyright.years} Visual Illusions Entertainment
+;# Licensed under the {gpl.type}
 
-;Visual Illusions Specific Settings
-developers=$devs$
-build.number=$build$
-build.time=$build.time$
-program.status=$program.status$
-version.check.url=$version.check.url$
-wiki.url=$wiki$
-issues.url=$issues$
+name={name}
+main-class={canary.main.class}
+author=Visual Illusions Entertainment
+version={plugin.version}

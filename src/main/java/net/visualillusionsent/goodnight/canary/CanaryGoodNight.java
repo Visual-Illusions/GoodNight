@@ -1,18 +1,18 @@
 /*
  * This file is part of GoodNight.
  *
- * Copyright © 2012-2013 Visual Illusions Entertainment
+ * Copyright © 2012-2014 Visual Illusions Entertainment
  *
  * GoodNight is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * GoodNight is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with GoodNight.
+ * You should have received a copy of the GNU General Public License along with this program.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
 package net.visualillusionsent.goodnight.canary;
@@ -48,7 +48,7 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
             }
         }
         catch (Exception ex) {
-            getLogman().logStacktrace("Failed to enable", ex);
+            getLogman().error("Failed to enable", ex);
             return false;
         }
         return true;
@@ -182,7 +182,7 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
             hasChange = true;
         }
         else if (props_file.getByte("percent.required") <= 0 || props_file.getByte("percent.required") >= 101) {
-            getLogman().logWarning("Percent Required out of range for World: '" + world + "' (Expected: '1 thru 100' Got: " + props_file.getByte("percent.required") + ") Resetting to default (66)");
+            getLogman().warn("Percent Required out of range for World: '" + world + "' (Expected: '1 thru 100' Got: " + props_file.getByte("percent.required") + ") Resetting to default (66)");
             props_file.setByte("percent.required", (byte) 66);
             hasChange = true;
         }

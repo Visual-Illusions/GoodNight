@@ -1,26 +1,24 @@
 /*
  * This file is part of GoodNight.
  *
- * Copyright © 2012-2013 Visual Illusions Entertainment
+ * Copyright © 2012-2014 Visual Illusions Entertainment
  *
  * GoodNight is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * GoodNight is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with GoodNight.
+ * You should have received a copy of the GNU General Public License along with this program.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
 package net.visualillusionsent.goodnight.canary;
 
-import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.world.DimensionType;
-import net.canarymod.chat.Colors;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
@@ -30,14 +28,13 @@ import net.canarymod.hook.player.DisconnectionHook;
 import net.canarymod.hook.world.TimeChangeHook;
 import net.canarymod.plugin.PluginListener;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
-import net.visualillusionsent.utils.VersionChecker;
 
 public final class CanaryGoodNightListener extends VisualIllusionsCanaryPluginInformationCommand implements PluginListener {
 
     CanaryGoodNightListener(CanaryGoodNight goodnight) throws CommandDependencyException {
         super(goodnight);
-        Canary.hooks().registerListener(this, goodnight);
-        Canary.commands().registerCommands(this, goodnight, false);
+        goodnight.registerListener(this);
+        goodnight.registerCommands(this, false);
     }
 
     @HookHandler
@@ -92,24 +89,7 @@ public final class CanaryGoodNightListener extends VisualIllusionsCanaryPluginIn
             permissions = { "goodnight.info" },
             toolTip = "/goodnight info")
     public final void goodNightInfo(MessageReceiver msgrec, String[] args) {
-        for (String msg : about) {
-            if (msg.equals("$VERSION_CHECK$")) {
-                VersionChecker vc = plugin.getVersionChecker();
-                Boolean isLatest = vc.isLatest();
-                if (isLatest == null) {
-                    msgrec.message(center(Colors.GRAY + "VersionCheckerError: " + vc.getErrorMessage()));
-                }
-                else if (!isLatest) {
-                    msgrec.message(center(Colors.GRAY + vc.getUpdateAvailibleMessage()));
-                }
-                else {
-                    msgrec.message(center(Colors.LIGHT_GREEN + "Latest Version Installed"));
-                }
-            }
-            else {
-                msgrec.message(msg);
-            }
-        }
+        super.sendInformation(msgrec);
     }
 
     private final boolean isNightFall(long time) {
