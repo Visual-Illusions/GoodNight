@@ -77,7 +77,7 @@ public final class VoteCalculator {
         return (byte) (((float) votes.size() / (float) goodnight.getWorldUserCount(world)) * 100);
     }
 
-    private final boolean adjustedMajority() { //for those times when majority doesnt quite reach the percent required
+    private boolean adjustedMajority() { //for those times when majority doesnt quite reach the percent required
         if (majorityAdjust) {
             int usercount = goodnight.getWorldUserCount(world);
             if (((byte) ((usercount - 1.0F) / ((float) usercount) * 100)) < percentage_required) {

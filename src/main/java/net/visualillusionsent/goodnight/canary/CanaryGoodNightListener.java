@@ -51,21 +51,23 @@ public final class CanaryGoodNightListener extends VisualIllusionsCanaryPluginIn
 
     @HookHandler
     public final void worldTimeChange(TimeChangeHook hook) {
-        if (!isNightFall(hook.getWorld().getRelativeTime())) {
+        if (!isNightTime(hook.getWorld().getRelativeTime())) {
             getGN().morningClear(hook.getWorld().getFqName());
         }
     }
 
-    @Command(aliases = { "goodnight" },
+    @Command(
+            aliases = { "goodnight" },
             description = "Casts vote",
             permissions = { "goodnight.vote" },
-            toolTip = "/goodnight")
+            toolTip = "/goodnight"
+    )
     public final void goodNight(MessageReceiver msgrec, String[] args) {
         if (msgrec instanceof Player) {
             Player player = (Player) msgrec;
             if (player.getWorld().getType() != DimensionType.fromName("NETHER") && player.getWorld().getType() != DimensionType.fromName("END")) {
                 if (getGN().worldEnabled(player.getWorld().getName())) {
-                    if (isNightFall(player.getWorld().getRelativeTime())) {
+                    if (isNightTime(player.getWorld().getRelativeTime())) {
                         if (!getGN().userVote(player.getName(), player.getWorld().getName())) {
                             msgrec.message(getGN().alreadyVoted(player.getWorld().getName(), player.getName()));
                         }
@@ -84,15 +86,36 @@ public final class CanaryGoodNightListener extends VisualIllusionsCanaryPluginIn
         }
     }
 
-    @Command(aliases = { "info" },
+    @Command(
+            aliases = { "info" },
             description = "GoodNight Information Command",
-            permissions = { "goodnight.info" },
-            toolTip = "/goodnight info")
+            permissions = { "" },
+            toolTip = "/goodnight info",
+            parent = "goodnight"
+    )
     public final void goodNightInfo(MessageReceiver msgrec, String[] args) {
         super.sendInformation(msgrec);
     }
 
-    private final boolean isNightFall(long time) {
+    @Command(
+            aliases = { "reload" },
+            description = "GoodNight configuration reload command",
+            permissions = { "" },
+            toolTip = "/goodnight reload",
+            parent = "goodnight"
+    )
+    public final void cfgReload(MessageReceiver msgrec, String[] args) {
+        try {
+            ((CanaryGoodNight) getPlugin()).reloadConfigs();
+            msgrec.notice("Reloaded configurations");
+        }
+        catch (Exception ex) {
+            msgrec.notice("Failed to reload configurations");
+        }
+
+    }
+
+    private boolean isNightTime(long time) {
         return time >= 11500 && time <= 22009;
     }
 

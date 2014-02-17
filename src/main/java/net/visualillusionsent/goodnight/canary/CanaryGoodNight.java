@@ -27,6 +27,7 @@ import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugi
 import net.visualillusionsent.utils.PropertiesFile;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implements GoodNight {
@@ -37,6 +38,7 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
 
     @Override
     public boolean enable() {
+        super.enable();
         try {
             new CanaryGoodNightListener(this);
             getWorldProps(GLO);
@@ -55,16 +57,12 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
     }
 
     @Override
-    public void disable() {
-    }
-
-    @Override
-    public int getWorldUserCount(String world) {
+    public final int getWorldUserCount(String world) {
         return Canary.getServer().getWorldManager().getWorld(world, false).getPlayerList().size();
     }
 
     @Override
-    public void goodMorning(String world) {
+    public final void goodMorning(String world) {
         World the_world = Canary.getServer().getWorldManager().getWorld(world, false);
         if (the_world != null) { //Just incase somehow it is null
             the_world.setTime(0);
@@ -73,7 +71,7 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
     }
 
     @Override
-    public void voteCasted(String user, String world) {
+    public final void voteCasted(String user, String world) {
         World the_world = Canary.getServer().getWorldManager().getWorld(world, false);
         if (the_world != null) { //Just incase somehow it is null
             String goodMorning = convertMessage(world, user, getMorningMessage(world));
@@ -84,7 +82,7 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
     }
 
     @Override
-    public boolean userVote(String user, String world) {
+    public final boolean userVote(String user, String world) {
         if (!calculators.containsKey(world)) {
             calculators.put(world, new VoteCalculator(this, world, percentRequired(world), useAdjustedMajority(world)));
         }
@@ -92,21 +90,21 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
     }
 
     @Override
-    public void removeUser(String user, String world) {
+    public final void removeUser(String user, String world) {
         if (calculators.containsKey(world)) {
             calculators.get(world).removeVote(user);
         }
     }
 
     @Override
-    public void morningClear(String world) {
+    public final void morningClear(String world) {
         if (calculators.containsKey(world)) {
             calculators.get(world).morningClear();
         }
     }
 
     @Override
-    public String isDayTime(String world, String user) {
+    public final String isDayTime(String world, String user) {
         if (getWorldProps(world).getBoolean("use.global")) {
             return convertMessage(world, user, getWorldProps(GLO).getString("day.time"));
         }
@@ -114,14 +112,14 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
     }
 
     @Override
-    public String alreadyVoted(String world, String user) {
+    public final String alreadyVoted(String world, String user) {
         if (getWorldProps(world).getBoolean("use.global")) {
             return convertMessage(world, user, getWorldProps(GLO).getString("already.voted"));
         }
         return convertMessage(world, user, getWorldProps(world).getString("already.voted"));
     }
 
-    private final PropertiesFile getWorldProps(String world) {
+    private PropertiesFile getWorldProps(String world) {
         if (!world_props.containsKey(world)) {
             world_props.put(world, Configuration.getPluginConfig(this, world));
             return testWorldProps(world, world_props.get(world));
@@ -129,26 +127,26 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
         return world_props.get(world);
     }
 
-    private final byte percentRequired(String world) {
+    private byte percentRequired(String world) {
         if (getWorldProps(world).getBoolean("use.global")) {
             return getWorldProps(GLO).getByte("percent.required");
         }
         return getWorldProps(world).getByte("percent.required");
     }
 
-    private final boolean useAdjustedMajority(String world) {
+    private boolean useAdjustedMajority(String world) {
         if (getWorldProps(world).getBoolean("use.global")) {
             return getWorldProps(GLO).getBoolean("adjust.majority");
         }
         return getWorldProps(world).getBoolean("adjust.majority");
     }
 
-    private final String getMorningMessage(String world) {
+    private String getMorningMessage(String world) {
         return getWorldProps(world).getString("good.morning.msg");
     }
 
-    private final String convertMessage(String world, String user, String message) {
-        String msg = new String(message);
+    private String convertMessage(String world, String user, String message) {
+        String msg = message;
         if (world != null) {
             msg = msg.replaceAll(Pattern.quote("${world}"), world.replace("_NORMAL", ""));
         }
@@ -163,7 +161,7 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
         return getWorldProps(world).getBoolean("world.enabled");
     }
 
-    private final PropertiesFile testWorldProps(String world, PropertiesFile props_file) {
+    private PropertiesFile testWorldProps(String world, PropertiesFile props_file) {
         boolean hasChange = false;
         if (!world.equals(GLO) && !props_file.containsKey("use.global")) {
             props_file.setBoolean("use.global", true, "Sets whether to use the global configuration for settings. DOES NOT effect world.enabled setting. Default: true");
@@ -202,5 +200,14 @@ public final class CanaryGoodNight extends VisualIllusionsCanaryPlugin implement
             props_file.save();
         }
         return props_file;
+    }
+
+    final void reloadConfigs() {
+        synchronized (world_props) {
+            for (Map.Entry<String, PropertiesFile> entry : world_props.entrySet()) {
+                entry.getValue().reload();
+                testWorldProps(entry.getKey(), entry.getValue());
+            }
+        }
     }
 }
