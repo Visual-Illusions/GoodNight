@@ -15,10 +15,19 @@ Copyright © 2012-2014 Visual Illusions Entertainment
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <canary.main.class>${project.groupId}.${project.artifactId}.canary.CanaryGoodNight</canary.main.class>
-        <vimcplugin.version>1.1.0-SNAPSHOT</vimcplugin.version>
+        <mcpluginlib.version>1.2.0-SNAPSHOT</mcpluginlib.version>
         <status.url>http://status.visualillusionsent.net/</status.url>
         <devs>darkdiplomat</devs>
+        <license.type>GNU General Public License v3</license.type>
+        <license.url>http://www.gnu.org/licenses/gpl.html</license.url>
+        <copyright.years>${project.inceptionYear}-${current.year}</copyright.years>
         <build.number/>
+        <build.number.display/>
+        <!-- Jar Signing -->
+        <keystore.path/>
+        <keystore.pass/>
+        <keystore.alias/>
+        <keystore.key.pass/>
     </properties>
     <organization>
         <name>Visual Illusions Entertainment</name>
@@ -55,34 +64,45 @@ Copyright © 2012-2014 Visual Illusions Entertainment
         </license>
     </licenses>
     <scm>
-        <url>https://github.com/Visual-Illusions/RuleBooks</url>
-        <connection>scm:git:git@github.com:Visual-Illusions/RuleBooks.git</connection>
-        <developerConnection>scm:git:git@github.com:Visual-Illusions/RuleBooks.git</developerConnection>
+        <url>https://github.com/Visual-Illusions/GoodNight</url>
+        <connection>scm:git:git@github.com:Visual-Illusions/GoodNight.git</connection>
+        <developerConnection>scm:git:git@github.com:Visual-Illusions/GoodNight.git</developerConnection>
     </scm>
     <issueManagement>
-        <url>http://github.com/Visual-Illusions/RuleBooks/issues</url>
+        <url>http://github.com/Visual-Illusions/GoodNight/issues</url>
         <system>GitHub Issues Tracker</system>
     </issueManagement>
     <ciManagement>
-        <url>http://ci.visualillusionsent.net/job/RuleBooks</url>
+        <url>http://ci.visualillusionsent.net/job/GoodNight</url>
         <system>Jenkins</system>
     </ciManagement>
     <repositories>
         <repository>
-            <id>vi-repo2</id>
+            <id>vi-repo</id>
             <name>Visual Illusions Repository</name>
-            <url>http://repo2.visualillusionsent.net/</url>
+            <url>http://repo.visualillusionsent.net/repository/public/</url>
         </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>net.visualillusionsent</groupId>
-            <artifactId>vimcplugin</artifactId>
-            <version>${vimcplugin.version}</version>
+            <artifactId>mcpluginlib</artifactId>
+            <version>${mcpluginlib.version}</version>
         </dependency>
     </dependencies>
     <build>
-        <finalName>${project.name}-${project.version}-${build.number}</finalName>
+        <finalName>${project.name}-${project.version}${build.number.display}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.inf</include>
+                    <include>META-INF/**</include>
+                    <include>resources/**</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <!-- Timestamp for year -->
             <plugin>
@@ -101,50 +121,6 @@ Copyright © 2012-2014 Visual Illusions Entertainment
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- Update Plugin/Mod Description Files -->
-            <plugin>
-                <groupId>com.google.code.maven-replacer-plugin</groupId>
-                <artifactId>replacer</artifactId>
-                <version>1.5.2</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <includes>
-                        <!-- CanaryMod -->
-                        <include>target/**/*.inf</include>
-                        <!-- Other files -->
-                        <include>target/**/*.cfg</include>
-                        <include>target/**/*.txt</include>
-                        <include>target/**/*.lang</include>
-                        <include>target/**/*.readme</include>
-                    </includes>
-                    <replacements>
-                        <replacement>
-                            <token>{plugin.version}</token>
-                            <value>${project.version}</value>
-                        </replacement>
-                        <replace>
-                            <token>{copyright.years}</token>
-                            <value>${project.inceptionYear}-${current.year}</value>
-                        </replace>
-                        <replace>
-                            <token>{name}</token>
-                            <value>${project.name}</value>
-                        </replace>
-                        <replace>
-                            <token>{canary.main.class}</token>
-                            <value>${canary.main.class}</value>
-                        </replace>
-                    </replacements>
-                    <regex>false</regex>
-                </configuration>
             </plugin>
             <!-- Compile plugin -->
             <plugin>
@@ -180,7 +156,7 @@ Copyright © 2012-2014 Visual Illusions Entertainment
                             <Status-URL>${status.url}</Status-URL>
                             <Wiki-URL>${project.url}</Wiki-URL>
                             <Developers>${devs}</Developers>
-                            <Copyright>${project.inceptionYear}-${current.year}</Copyright>
+                            <Copyright>${copyright.years}</Copyright>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -211,9 +187,9 @@ Copyright © 2012-2014 Visual Illusions Entertainment
                     </mapping>
                     <properties>
                         <name>${project.name}</name>
-                        <years>${project.inceptionYear}-${current.year}</years>
-                        <gpl.type>GNU General Public License</gpl.type>
-                        <license.url>http://www.gnu.org/licenses/gpl.html</license.url>
+                        <years>${copyright.years}</years>
+                        <license.type>${license.type}</license.type>
+                        <license.url>${license.url}</license.url>
                     </properties>
                     <includes>
                         <include>src/main/java/**</include>
@@ -234,31 +210,32 @@ Copyright © 2012-2014 Visual Illusions Entertainment
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <!-- Only need to shade the VIMCPlugin stuff -->
-                                    <include>net.visualillusionsent:vimcplugin</include>
+                                    <!-- Only need to shade the MCPluginLib stuff -->
+                                    <include>net.visualillusionsent:mcpluginlib</include>
                                 </includes>
                             </artifactSet>
                             <filters>
                                 <filter>
-                                    <artifact>net.visualillusionsent:vimcplugin</artifact>
+                                    <artifact>net.visualillusionsent:mcpluginlib</artifact>
                                     <includes>
                                         <!-- Always include the license stuff -->
                                         <include>META-INF/license/**</include>
-                                        <!-- Always include base VIMCPlugin stuff -->
+                                        <!-- Always include the Root certificate -->
+                                        <include>META-INF/certificates/**</include>
+                                        <!-- Always include base MCPluginLib stuff -->
                                         <include>net/visualillusionsent/minecraft/plugin/**</include>
                                     </includes>
                                     <excludes>
-                                        <!-- Bukkit/Spout are unused at this time -->
-                                        <exclude>net/visualillusionsent/minecraft/plugin/bukkit/**</exclude>
-                                        <exclude>net/visualillusionsent/minecraft/plugin/spout/**</exclude>
+                                        <!-- Sponge is unused at this time -->
+                                        <exclude>net/visualillusionsent/minecraft/plugin/sponge/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
                             <relocations>
-                                <!-- Relocate base VIMCPlugin stuff to base of plugin -->
+                                <!-- Relocate base MCPluginLib stuff to base of plugin -->
                                 <relocation>
                                     <pattern>net.visualillusionsent.minecraft.plugin</pattern>
-                                    <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}.lib</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -267,4 +244,58 @@ Copyright © 2012-2014 Visual Illusions Entertainment
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <build.number>${BUILD_NUMBER}</build.number>
+                <build.number.display>-b${BUILD_NUMBER}</build.number.display>
+            </properties>
+        </profile>
+        <!-- Should remain last profile -->
+        <profile>
+            <id>sign-jar</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jarsigner-plugin</artifactId>
+                        <version>1.3.2</version>
+                        <executions>
+                            <execution>
+                                <id>sign</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <archiveDirectory>target/</archiveDirectory>
+                            <excludes>
+                                <exclude>*.jar</exclude>
+                            </excludes>
+                            <includes>
+                                <include>${project.name}*.jar</include>
+                            </includes>
+                            <keystore>${keystore.path}</keystore>
+                            <alias>${keystore.alias}</alias>
+                            <storepass>${keystore.pass}</storepass>
+                            <keypass>${keystore.key.pass}</keypass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
